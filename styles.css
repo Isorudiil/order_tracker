@@ -1,0 +1,38 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+#csvFileInput {
+    display: block;
+    margin: 0 auto;
+}
+
+#unscheduled-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex-wrap: wrap;
+    width: 100%;
+    position: relative;
+    padding: 10px;
+}
+
+.job-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    width: 30%;
+    padding: 10px;
+    margin: 10px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+}

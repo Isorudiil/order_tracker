@@ -1,10 +1,35 @@
 const fileInput = document.getElementById('csvFileInput');
-const titleNumbers = {
-  "Shipment Date": 0,
-  "Customer": 1,
-  "Order Number": 2,
-  "Total Weight": 7,
-};
+// values: 0 job, 1 step, 2 part, 4 raw, 5 qty posted, 8 wc, 10, due
+const titleNumbers = [
+  {
+    value: 0,
+    title: 'Job number',
+  },
+  {
+    value: 1,
+    title: 'Step number',
+  },
+  {
+    value: 2,
+    title: 'Part number',
+  },
+  {
+    value: 4,
+    title: 'Raw material',
+  },
+  {
+    value: 5,
+    title: 'Quantity posted',
+  },
+  {
+    value: 8,
+    title: 'Work center',
+  },
+  {
+    value: 10,
+    title: 'Due date',
+  }
+];
 
 fileInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
@@ -16,14 +41,43 @@ fileInput.addEventListener('change', (e) => {
   reader.onloadend = (event) => {
     const text = event.target.result;
     const rows = text.split('\n').map(row => row.split(','));
-    // function to create titles
-    const titleRow = rows[0];
-    for (const titleNumber in titleRow) {
-      console.log(titleNumber);
-      if (titleNumber in titleNumbers.value) {
-        console.log(titleNumbers[titleNumber]);
+
+    // TODO: Unused, but would like to consider possible using it. Need to look more into this
+    // const items = Array.from(rows);
+
+    const unscheduledContainer = document.getElementById('unscheduled-container');
+
+    for (const row of rows) {
+      const container = document.createElement('div');
+      container.classList.add('job-container');
+      for (const { value, title } of titleNumbers) {
+        let cleanValue
+
+        if (row[value] === '""') {
+          cleanValue = "Missing data";
+        } else {
+          cleanValue = row[value].replace(/^['"]*|['"]*|<br>$/gm, '');
+        }
+
+        if (value === 2) {
+          console.log(cleanValue.replace(/([a-zA-Z]{5})[a-zA-Z]+/g, '$1'));
+        } else if (value === 5) {
+          if (cleanValue !== 'Missing data') {
+            const formatter = new Intl.NumberFormat('en-US');
+            cleanValue = formatter.format(cleanValue);
+          }
+        } else if (value === 10) {
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          cleanValue = new Date(cleanValue);
+          cleanValue = new Intl.DateTimeFormat('en-US', options).format(cleanValue);
+        }
+
+        const heading = container.appendChild(document.createElement('h3'));
+        const paragraph = container.appendChild(document.createElement('p'));
+        heading.innerText = title;
+        paragraph.innerText = cleanValue;
       }
+      unscheduledContainer.appendChild(container);
     }
-    console.log(rows[0]);
   };
 });
