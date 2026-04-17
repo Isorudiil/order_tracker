@@ -14,14 +14,25 @@ h1 {
     margin: 0 auto;
 }
 
-#unscheduled-container {
+#board {
     display: flex;
     flex-direction: row;
-    align-items: stretch;
-    flex-wrap: wrap;
-    width: 100%;
-    position: relative;
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin: 20px;
     padding: 10px;
+}
+
+#work-center {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 30%;
+    position: relative;
+    padding: 2em;
+    margin: 2em;
+    border: 1px solid lightgray;
+    border-radius: 10px;
 }
 
 .job-container {
@@ -29,10 +40,13 @@ h1 {
     flex-direction: column;
     justify-content: space-between;
     position: relative;
-    width: 30%;
     padding: 10px;
     margin: 10px;
 
     border: 1px solid black;
     border-radius: 10px;
+}
+
+.wc-heading {
+    text-align: center;
 }

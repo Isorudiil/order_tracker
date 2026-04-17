@@ -42,7 +42,7 @@ fileInput.addEventListener('change', (e) => {
     const text = event.target.result;
     const rows = text.split('\n').map(row => row.split(','));
 
-    // TODO: Unused, but would like to consider possible using it. Need to look more into this
+    // TODO: Unused, but would like to consider possibly using it. Need to look more into this
     // const items = Array.from(rows);
 
     const unscheduledContainer = document.getElementById('unscheduled-container');
@@ -50,24 +50,28 @@ fileInput.addEventListener('change', (e) => {
     for (const row of rows) {
       const container = document.createElement('div');
       container.classList.add('job-container');
-      for (const { value, title } of titleNumbers) {
-        let cleanValue
+      for (const {value, title} of titleNumbers) {
+        let cleanValue = row[value];
 
-        if (row[value] === '""') {
+        if (cleanValue === '""') {
           cleanValue = "Missing data";
+        } else if (cleanValue === undefined) {
+          break;
         } else {
-          cleanValue = row[value].replace(/^['"]*|['"]*|<br>$/gm, '');
+          cleanValue = cleanValue.replace(/^['"]*|['"]*|<br>$/gm, '');
         }
 
         if (value === 2) {
-          console.log(cleanValue.replace(/([a-zA-Z]{5})[a-zA-Z]+/g, '$1'));
+          if (cleanValue[0] === "M" ) {
+            cleanValue = cleanValue.match(/^([^A-Z]*[A-Z]){4}[^A-Z]*(?=[A-Z])/gm);
+          }
         } else if (value === 5) {
           if (cleanValue !== 'Missing data') {
             const formatter = new Intl.NumberFormat('en-US');
             cleanValue = formatter.format(cleanValue);
           }
         } else if (value === 10) {
-          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
           cleanValue = new Date(cleanValue);
           cleanValue = new Intl.DateTimeFormat('en-US', options).format(cleanValue);
         }
@@ -77,7 +81,13 @@ fileInput.addEventListener('change', (e) => {
         heading.innerText = title;
         paragraph.innerText = cleanValue;
       }
-      unscheduledContainer.appendChild(container);
+
+      const lastChild = container.lastChild;
+      if (lastChild.innerText === '') {
+        break;
+      } else {
+        unscheduledContainer.appendChild(container);
+      }
     }
   };
 });
